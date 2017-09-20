@@ -17,6 +17,13 @@ repositories {
 dependencies {
 	testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0")
 	testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0")
+
+	// For Docker example
+	testCompile("com.github.docker-java:docker-java:3.0.13")
+	testCompile("org.codejargon:fluentjdbc:1.8.3")
+	testCompile("org.mariadb.jdbc:mariadb-java-client:2.1.1")
+	testCompile("org.awaitility:awaitility:3.0.0")
+	testRuntime("org.slf4j:slf4j-simple:1.7.25")
 }
 
 task wrapper(type: Wrapper) {

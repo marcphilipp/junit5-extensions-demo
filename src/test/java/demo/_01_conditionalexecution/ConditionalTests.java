@@ -1,9 +1,9 @@
 package demo._01_conditionalexecution;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.example.Calculator;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConditionalTests {
 
