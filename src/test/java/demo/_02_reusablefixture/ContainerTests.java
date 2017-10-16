@@ -13,8 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ContainerTests {
 
+	private static final String MYSQL_ROOT_PASSWORD = "root";
+	private static final String MYSQL_DATABASE = "demo";
+	private static final int MYSQL_PORT = 3306;
+
 	@Test
-	@Container(image = "mariadb", env = {"MYSQL_ROOT_PASSWORD=root", "MYSQL_DATABASE=demo"}, ports = "3306:3306")
+	@Container(image = "mariadb", ports = MYSQL_PORT + ":" + MYSQL_PORT, env = {
+		"MYSQL_ROOT_PASSWORD=" + MYSQL_ROOT_PASSWORD,
+		"MYSQL_DATABASE=" + MYSQL_DATABASE
+	})
 	void insertIntoTable() throws Exception {
 		FluentJdbc jdbc = connectToDatabase();
 		jdbc.query().plainConnection(connection ->
@@ -39,9 +46,9 @@ class ContainerTests {
 	}
 
 	private FluentJdbc connectToDatabase() throws Exception {
-		MariaDbDataSource dataSource = new MariaDbDataSource("127.0.0.1", 3306, "demo");
+		MariaDbDataSource dataSource = new MariaDbDataSource("127.0.0.1", MYSQL_PORT, MYSQL_DATABASE);
 		dataSource.setUser("root");
-		dataSource.setPassword("root");
+		dataSource.setPassword(MYSQL_ROOT_PASSWORD);
 		await().atMost(30, SECONDS)
 			.until(() -> {
 				try (Connection connection = dataSource.getConnection()) {
