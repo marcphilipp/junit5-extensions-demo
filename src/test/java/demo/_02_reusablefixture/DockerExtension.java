@@ -29,7 +29,7 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-		String containerId = getStore(context).get("containerId", String.class);
+		String containerId = getContainerId(context);
 		if (containerId != null) {
 			stopContainer(context, containerId);
 		}
@@ -60,7 +60,7 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 		dockerClient.removeContainerCmd(containerId).exec();
 	}
 
-	private DockerClient getDockerClient(ExtensionContext context) {
+	public static DockerClient getDockerClient(ExtensionContext context) {
 		return context.getRoot().getStore(Namespace.GLOBAL)
 				.getOrComputeIfAbsent(
 						"DockerClient",
@@ -68,7 +68,12 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 						DockerClient.class);
 	}
 
-	private ExtensionContext.Store getStore(ExtensionContext context) {
+	public static String getContainerId(ExtensionContext context) {
+		return getStore(context).get("containerId", String.class);
+	}
+
+	private static ExtensionContext.Store getStore(ExtensionContext context) {
 		return context.getStore(Namespace.create(DockerExtension.class, context.getUniqueId()));
 	}
+
 }
