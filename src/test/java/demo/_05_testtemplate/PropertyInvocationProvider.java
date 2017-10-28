@@ -80,7 +80,8 @@ public class PropertyInvocationProvider implements TestTemplateInvocationContext
 
 	private AfterEachCallback afterEachCallback(AtomicBoolean failed) {
 		return context -> {
-			if (context.getExecutionException().isPresent()) {
+			Optional<Throwable> exception = context.getExecutionException();
+			if (exception.isPresent() && !(exception.get() instanceof TestAbortedException)) {
 				failed.compareAndSet(false, true);
 			}
 		};
