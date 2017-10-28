@@ -17,7 +17,7 @@ class PropertyTests {
 	}
 
 	@DisplayName("element removed => size decreases")
-	@Property(seed = 1508267074852L)
+	@Property
 	void removingElementDecreasesListSize(List<String> items) {
 		int previousSize = items.size();
 		items.remove(items.get(0));
