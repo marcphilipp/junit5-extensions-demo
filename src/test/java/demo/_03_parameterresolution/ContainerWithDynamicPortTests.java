@@ -12,11 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class ContainerWithDynamicPortTests {
 
@@ -34,22 +36,23 @@ class ContainerWithDynamicPortTests {
 		FluentJdbc jdbc = connectToDatabase(networkSettings, testReporter);
 		jdbc.query().plainConnection(connection ->
 			connection.createStatement()
-				.execute("CREATE TABLE example (id BIGINT NOT NULL, name VARCHAR(255) not null)")
+				.execute("CREATE TABLE example (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL)")
 		);
 
-		executeCodeUnderTest(jdbc);
+		executeCodeUnderTest(jdbc, "John Doe");
+		executeCodeUnderTest(jdbc, "Jane Doe");
 
-		String name = jdbc.query()
-				.select("SELECT name FROM example")
-				.singleResult(resultSet -> resultSet.getString(1));
+		List<String> names = jdbc.query()
+				.select("SELECT name FROM example ORDER BY id")
+				.listResult(resultSet -> resultSet.getString(1));
 
-		assertEquals("John Doe", name);
+		assertIterableEquals(asList("John Doe", "Jane Doe"), names);
 	}
 
-	private void executeCodeUnderTest(FluentJdbc jdbc) {
+	private void executeCodeUnderTest(FluentJdbc jdbc, String name) {
 		jdbc.query()
-				.update("INSERT INTO example (id, name) VALUES (?, ?)")
-				.params(42, "John Doe")
+				.update("INSERT INTO example (name) VALUES (?)")
+				.params(name)
 				.run();
 	}
 

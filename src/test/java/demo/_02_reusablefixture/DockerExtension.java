@@ -49,6 +49,8 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 				.withPortBindings(Arrays.stream(ports).map(PortBinding::parse).collect(toList()))
 				.exec()
 				.getId();
+
+		context.publishReportEntry("docker-container-id", containerId);
 		dockerClient.startContainerCmd(containerId).exec();
 
 		return containerId;
