@@ -1,14 +1,4 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
-	}
-}
-
 apply plugin: 'java'
-apply plugin: 'org.junit.platform.gradle.plugin'
 
 repositories {
 	mavenCentral()
@@ -25,6 +15,10 @@ dependencies {
 	testCompile("org.mariadb.jdbc:mariadb-java-client:2.1.1")
 	testCompile("org.awaitility:awaitility:3.0.0")
 	testRuntime("org.slf4j:slf4j-simple:1.7.25")
+}
+
+test {
+	useJUnitPlatform()
 }
 
 wrapper {
