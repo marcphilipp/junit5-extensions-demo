@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ConditionalTests {
 
 	@Test
-	@Environment(enabledFor = {"Dev", "QA"})
+	@EnabledForEnvironment({"Dev", "QA"})
 	void add() {
 		assertEquals(2, new Calculator().add(1, 1));
 	}
 
 	@Test
-	// @Environment(enabledFor = {})
+	// @EnabledForEnvironment({})
 	void subtract() {
 		assertEquals(0, new Calculator().subtract(1, 1));
 	}

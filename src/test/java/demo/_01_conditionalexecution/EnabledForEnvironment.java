@@ -3,13 +3,16 @@ package demo._01_conditionalexecution;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @ExtendWith(EnvironmentExecutionCondition.class)
 @Retention(RUNTIME)
-public @interface Environment {
+@Target(METHOD)
+public @interface EnabledForEnvironment {
 
-	String[] enabledFor();
+	String[] value();
 
 }
