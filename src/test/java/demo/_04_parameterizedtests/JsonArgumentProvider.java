@@ -28,7 +28,7 @@ public class JsonArgumentProvider implements ArgumentsProvider, AnnotationConsum
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 		Class<?> testClass = context.getRequiredTestClass();
 		Class<?> parameterType = context.getRequiredTestMethod().getParameterTypes()[0];
-		try (InputStream inputStream = testClass.getResourceAsStream(resource)) {
+		try (var inputStream = testClass.getResourceAsStream(resource)) {
 			return readValues(inputStream, parameterType).map(Arguments::of);
 		}
 	}

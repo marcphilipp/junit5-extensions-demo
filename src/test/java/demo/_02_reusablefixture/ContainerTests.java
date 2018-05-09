@@ -24,7 +24,7 @@ class ContainerTests {
 		"MYSQL_ROOT_PASSWORD=" + MYSQL_ROOT_PASSWORD,
 		"MYSQL_DATABASE=" + MYSQL_DATABASE
 	})
-	void insertIntoTable() throws Exception {
+	void insertIntoTable() {
 		FluentJdbc jdbc = connectToDatabase();
 		jdbc.query().plainConnection(connection ->
 			connection.createStatement()
@@ -35,21 +35,21 @@ class ContainerTests {
 		executeCodeUnderTest(jdbc, "Jane Doe");
 
 		List<String> names = jdbc.query()
-				.select("SELECT name FROM example ORDER BY id")
-				.listResult(resultSet -> resultSet.getString(1));
+			.select("SELECT name FROM example ORDER BY id")
+			.listResult(resultSet -> resultSet.getString(1));
 
 		assertIterableEquals(asList("John Doe", "Jane Doe"), names);
 	}
 
 	private void executeCodeUnderTest(FluentJdbc jdbc, String name) {
 		jdbc.query()
-				.update("INSERT INTO example (name) VALUES (?)")
-				.params(name)
-				.run();
+			.update("INSERT INTO example (name) VALUES (?)")
+			.params(name)
+			.run();
 	}
 
-	private FluentJdbc connectToDatabase() throws Exception {
-		MariaDbDataSource dataSource = new MariaDbDataSource("127.0.0.1", MYSQL_PORT, MYSQL_DATABASE);
+	private FluentJdbc connectToDatabase() {
+		var dataSource = new MariaDbDataSource("127.0.0.1", MYSQL_PORT, MYSQL_DATABASE);
 		dataSource.setUser("root");
 		dataSource.setPassword(MYSQL_ROOT_PASSWORD);
 		await().atMost(30, SECONDS)
@@ -61,8 +61,8 @@ class ContainerTests {
 				}
 			});
 		return new FluentJdbcBuilder()
-				.connectionProvider(dataSource)
-				.build();
+			.connectionProvider(dataSource)
+			.build();
 	}
 
 }

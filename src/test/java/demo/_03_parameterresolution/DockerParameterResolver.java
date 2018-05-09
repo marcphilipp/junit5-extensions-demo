@@ -20,7 +20,8 @@ public class DockerParameterResolver implements ParameterResolver {
 	@Override
 	public NetworkSettings resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
 		DockerClient dockerClient = DockerExtension.getDockerClient(extensionContext);
-		InspectContainerResponse response = dockerClient.inspectContainerCmd(DockerExtension.getContainerId(extensionContext)).exec();
+		String containerId = DockerExtension.getContainerId(extensionContext);
+		InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
 		return response.getNetworkSettings();
 	}
 

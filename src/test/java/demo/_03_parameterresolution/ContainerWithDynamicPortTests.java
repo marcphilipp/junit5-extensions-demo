@@ -32,7 +32,7 @@ class ContainerWithDynamicPortTests {
 		"MYSQL_DATABASE=" + MYSQL_DATABASE
 	})
 	@ExtendWith(DockerParameterResolver.class)
-	void insertIntoTable(NetworkSettings networkSettings, TestReporter testReporter) throws Exception {
+	void insertIntoTable(NetworkSettings networkSettings, TestReporter testReporter) {
 		FluentJdbc jdbc = connectToDatabase(networkSettings, testReporter);
 		jdbc.query().plainConnection(connection ->
 			connection.createStatement()
@@ -43,37 +43,37 @@ class ContainerWithDynamicPortTests {
 		executeCodeUnderTest(jdbc, "Jane Doe");
 
 		List<String> names = jdbc.query()
-				.select("SELECT name FROM example ORDER BY id")
-				.listResult(resultSet -> resultSet.getString(1));
+			.select("SELECT name FROM example ORDER BY id")
+			.listResult(resultSet -> resultSet.getString(1));
 
 		assertIterableEquals(asList("John Doe", "Jane Doe"), names);
 	}
 
 	private void executeCodeUnderTest(FluentJdbc jdbc, String name) {
 		jdbc.query()
-				.update("INSERT INTO example (name) VALUES (?)")
-				.params(name)
-				.run();
+			.update("INSERT INTO example (name) VALUES (?)")
+			.params(name)
+			.run();
 	}
 
-	private FluentJdbc connectToDatabase(NetworkSettings networkSettings, TestReporter testReporter) throws Exception {
+	private FluentJdbc connectToDatabase(NetworkSettings networkSettings, TestReporter testReporter) {
 		int port = getMySQLPort(networkSettings);
 		testReporter.publishEntry("MySQL port", String.valueOf(port));
 
-		MariaDbDataSource dataSource = new MariaDbDataSource("127.0.0.1", port, MYSQL_DATABASE);
+		var dataSource = new MariaDbDataSource("127.0.0.1", port, MYSQL_DATABASE);
 		dataSource.setUser("root");
 		dataSource.setPassword(MYSQL_ROOT_PASSWORD);
 		await().atMost(30, SECONDS)
 			.until(() -> {
-				try (Connection connection = dataSource.getConnection()) {
+				try (var connection = dataSource.getConnection()) {
 					return connection.isValid(1000);
 				} catch (Exception e) {
 					return false;
 				}
 			});
 		return new FluentJdbcBuilder()
-				.connectionProvider(dataSource)
-				.build();
+			.connectionProvider(dataSource)
+			.build();
 	}
 
 	private int getMySQLPort(NetworkSettings networkSettings) {
