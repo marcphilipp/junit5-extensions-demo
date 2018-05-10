@@ -6,9 +6,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
@@ -28,8 +25,8 @@ public class EnvironmentExecutionCondition implements ExecutionCondition {
 		}
 		Set<String> enabledEnvironments = getEnabledEnvironments(context);
 		return enabledEnvironments.contains(activeEnvironment)
-				? enabled("active environment (" + activeEnvironment + ") is enabled for this test")
-				: disabled("active environment (" + activeEnvironment + ") is not enabled for this test");
+				? enabled("enabled for the active environment (" + activeEnvironment + ")")
+				: disabled("disabled for the active environment (" + activeEnvironment + ")");
 	}
 
 	private Set<String> getEnabledEnvironments(ExtensionContext context) {

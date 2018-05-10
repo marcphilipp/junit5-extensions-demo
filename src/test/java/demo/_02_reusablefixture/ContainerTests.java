@@ -31,8 +31,8 @@ class ContainerTests {
 				.execute("CREATE TABLE example (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL)")
 		);
 
-		executeCodeUnderTest(jdbc, "John Doe");
-		executeCodeUnderTest(jdbc, "Jane Doe");
+		insertIntoExampleTable(jdbc, "John Doe");
+		insertIntoExampleTable(jdbc, "Jane Doe");
 
 		List<String> names = jdbc.query()
 			.select("SELECT name FROM example ORDER BY id")
@@ -41,7 +41,7 @@ class ContainerTests {
 		assertIterableEquals(asList("John Doe", "Jane Doe"), names);
 	}
 
-	private void executeCodeUnderTest(FluentJdbc jdbc, String name) {
+	private void insertIntoExampleTable(FluentJdbc jdbc, String name) {
 		jdbc.query()
 			.update("INSERT INTO example (name) VALUES (?)")
 			.params(name)
