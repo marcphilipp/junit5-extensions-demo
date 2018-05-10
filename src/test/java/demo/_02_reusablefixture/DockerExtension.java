@@ -37,6 +37,10 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 		}
 	}
 
+	public static String getContainerId(ExtensionContext context) {
+		return getStore(context).get("containerId", String.class);
+	}
+
 	private String startContainer(ExtensionContext context, String image, String[] env, String[] ports) {
 		DockerClient dockerClient = getDockerClient(context);
 
@@ -72,10 +76,6 @@ public class DockerExtension implements BeforeEachCallback, AfterEachCallback {
 				"DockerClient",
 				key -> new DockerClientResource(),
 				DockerClientResource.class).get();
-	}
-
-	public static String getContainerId(ExtensionContext context) {
-		return getStore(context).get("containerId", String.class);
 	}
 
 	private static ExtensionContext.Store getStore(ExtensionContext context) {

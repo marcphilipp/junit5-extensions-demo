@@ -32,7 +32,10 @@ class ContainerWithDynamicPortTests {
 	})
 	@ExtendWith(DockerParameterResolver.class)
 	void insertIntoTable(NetworkSettings networkSettings, TestReporter testReporter) {
-		FluentJdbc jdbc = connectToDatabase(networkSettings, testReporter);
+		int port = getMySQLPort(networkSettings);
+		testReporter.publishEntry("MySQL port", String.valueOf(port));
+
+		FluentJdbc jdbc = connectToDatabase(port);
 		jdbc.query().plainConnection(connection ->
 			connection.createStatement()
 				.execute("CREATE TABLE example (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL)")
@@ -55,10 +58,7 @@ class ContainerWithDynamicPortTests {
 			.run();
 	}
 
-	private FluentJdbc connectToDatabase(NetworkSettings networkSettings, TestReporter testReporter) {
-		int port = getMySQLPort(networkSettings);
-		testReporter.publishEntry("MySQL port", String.valueOf(port));
-
+	private FluentJdbc connectToDatabase(int port) {
 		var dataSource = new MariaDbDataSource("127.0.0.1", port, MYSQL_DATABASE);
 		dataSource.setUser("root");
 		dataSource.setPassword(MYSQL_ROOT_PASSWORD);
